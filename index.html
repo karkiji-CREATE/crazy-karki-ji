@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ultimate Prank</title>
+<style>
+body, html{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:black;
+  color:#00ff00;
+  font-family:"Courier New", monospace;
+}
+
+/* COMMON SCREEN STYLING */
+.screen{
+  display:none;
+  width:100%;
+  height:100%;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+}
+
+/* START SCREEN */
+#start{display:flex;}
+
+/* TERMINAL TEXT */
+#terminalText{
+  text-align:left;
+  width:85%;
+  font-size:22px;
+  margin:auto;
+}
+
+/* WARNING TEXT */
+#warnText{
+  font-size:28px;
+  color:red;
+  margin:15px 0;
+  font-weight:bold;
+  text-align:center;
+}
+
+/* RED OVERLAY */
+#overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(120,0,0,0.15);
+  pointer-events:none;
+  animation:pulse 1s infinite;
+  display:none;
+}
+@keyframes pulse{
+  0%{opacity:.2}
+  50%{opacity:.5}
+  100%{opacity:.2}
+}
+
+/* TRACKING DOTS */
+#tracking{
+  color:red;
+  font-size:24px;
+  margin-top:20px;
+}
+.dot{
+  animation:blink 1.2s infinite;
+}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{
+  0%{opacity:0}
+  50%{opacity:1}
+  100%{opacity:0}
+}
+
+/* BIG TEXT PAGES */
+.bigText{
+  font-size:80px;
+  color:red;
+  padding:20px;
+}
+.bigTextWhite{
+  font-size:70px;
+  color:white;
+  padding:20px;
+}
+
+/* BUTTON */
+.btn{
+  padding:18px 40px;
+  font-size:22px;
+  background:#8b0000;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:30px;
+  animation:glow 1.5s infinite;
+  z-index:2000;        
+  position:relative;   
+}
+@keyframes glow{
+  0%{box-shadow:0 0 10px red}
+  50%{box-shadow:0 0 35px red}
+  100%{box-shadow:0 0 10px red}
+}
+
+/* CAMERA FLASH */
+#cameraFlash{
+  position:fixed;
+  inset:0;
+  background:white;
+  opacity:0;
+  z-index:999;
+}
+.flashAnim{
+  animation:flash 0.15s ease-in-out;
+}
+@keyframes flash{
+  0%{opacity:0;}
+  50%{opacity:1;}
+  100%{opacity:0;}
+}
+
+/* LOADING BAR */
+#loadingBarContainer{
+  width:80%;
+  background:#222;
+  margin:auto;
+  margin-top:20px;
+  height:25px;
+  border-radius:5px;
+  overflow:hidden;
+  display:none;
+}
+#loadingBar{
+  width:0%;
+  height:100%;
+  background:red;
+  text-align:right;
+  line-height:25px;
+  color:white;
+  padding-right:5px;
+  box-sizing:border-box;
+}
+
+/* SCREEN DARKEN EFFECT */
+#darkenScreen{
+  position:fixed;
+  inset:0;
+  background:black;
+  opacity:0;
+  z-index:1000;
+  display:block;
+  transition:opacity 1s;
+  pointer-events:none; 
+}
+
+/* FINAL PAGE EXTRA TEXT */
+#finalText{
+  font-size:24px;
+  color:white;
+  margin-top:20px;
+}
+
+/* FINAL PAGE */
+#final{
+  display:none;
+  width:100%;
+  height:100%;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+  pointer-events:auto;  
+  z-index:1500;
+}
+</style>
+</head>
+
+<body oncontextmenu="return false;">
+
+<!-- PAGE 1: Fake Hacking -->
+<div id="start" class="screen">
+  <h1>🔒 Secure File 🔒</h1>
+</div>
+
+<div id="hack" class="screen">
+  <div id="overlay"></div>
+  <div id="warnText">DON'T TURN OFF YOUR DEVICE OR YOU WILL LOSE EVERYTHING</div>
+  
+  <!-- STOP BUTTON -->
+  <button id="stopBtn" style="
+    position:absolute;
+    top:15px;
+    right:15px;
+    padding:10px 15px;
+    font-size:16px;
+    background:#555;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    z-index:3000;">STOP</button>
+
+  <div id="terminalText"></div>
+  <div id="tracking">
+    Live tracking
+    <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+  </div>
+  <div id="loadingBarContainer">
+    <div id="loadingBar">0%</div>
+  </div>
+</div>
+
+<div id="cameraFlash"></div>
+<div id="darkenScreen"></div>
+
+<!-- PAGE 2: Pranked -->
+<div id="pranked" class="screen">
+  <div class="bigText">
+    YOU GOT PRANKED 😒
+  </div>
+</div>
+
+<!-- PAGE 3: Got You -->
+<div id="final" class="screen">
+  <div class="bigTextWhite">
+    GOT YOU 😎<br>
+    Now you can get me too.
+  </div>
+  <button class="btn" onclick="redirectIG()">Click here to get me</button>
+  <div id="finalText">
+    What brought you to click on the link of the profile?
+  </div>
+</div>
+
+<script>
+// FAKE IP GENERATOR
+function generateIP(){
+  return Math.floor(Math.random()*255)+"."+Math.floor(Math.random()*255)+"."+Math.floor(Math.random()*255)+"."+Math.floor(Math.random()*255);
+}
+
+// START HACK
+function startHack(){
+  document.documentElement.requestFullscreen().catch(()=>{});
+  document.getElementById("start").style.display="none";
+  document.getElementById("hack").style.display="flex";
+
+  // MOBILE VIBRATION
+  if(navigator.vibrate){navigator.vibrate([300,100,300,100,500]);}
+
+  const lines=[
+    "Establishing secure connection...",
+    "Bypassing firewall...",
+    "WEBCAM DETECTED",
+    "Capturing screenshot...",
+    "Personal files capturing",
+    "Searching images",
+    "Searching videos",
+    "LIVE LOCATION REVEALED",
+    "Country: Nepal",
+    "Exact location found",
+    "IP Address: "+generateIP(),
+    "Uploading private data...",
+    "SYSTEM LOCKED"
+  ];
+
+  let i=0;
+  let box=document.getElementById("terminalText");
+
+  let typing=setInterval(()=>{
+    if(i<lines.length){
+      box.innerHTML += "<div>"+lines[i]+"</div>";
+
+      // CAMERA FLASH on screenshot line
+      if(lines[i].includes("Capturing screenshot")){
+        flashCamera();
+      }
+
+      i++;
+    }else{
+      clearInterval(typing);
+      startLoadingBar();
+    }
+  },900);
+}
+
+// CAMERA FLASH EFFECT
+function flashCamera(){
+  const flash=document.getElementById("cameraFlash");
+  flash.classList.add("flashAnim");
+  setTimeout(()=>{flash.classList.remove("flashAnim");},150);
+}
+
+// FAKE LOADING BAR
+function startLoadingBar(){
+  const barContainer=document.getElementById("loadingBarContainer");
+  const bar=document.getElementById("loadingBar");
+  barContainer.style.display="block";
+
+  let width=0;
+  let progress=setInterval(()=>{
+    if(width>=100){
+      clearInterval(progress);
+      darkenScreenTransition();
+    }else{
+      width++;
+      bar.style.width=width+"%";
+      bar.innerText=width+"%";
+    }
+  },40);
+}
+
+// DARKEN SCREEN BEFORE PAGE 2
+function darkenScreenTransition(){
+  const dark=document.getElementById("darkenScreen");
+  dark.style.opacity=1;
+  setTimeout(()=>{
+    document.getElementById("hack").style.display="none";
+    dark.style.opacity=0;
+    setTimeout(()=>{dark.style.display="none";showPranked();},1000);
+  },1500);
+}
+
+// PAGE 2: showPranked now 3 seconds
+function showPranked(){
+  document.getElementById("pranked").style.display="flex";
+  setTimeout(showFinal,3000); // 3 seconds
+}
+
+// PAGE 3
+function showFinal(){
+  document.getElementById("pranked").style.display="none";
+  document.getElementById("final").style.display="flex";
+}
+
+// REDIRECT TO INSTAGRAM
+function redirectIG(){
+  window.open("https://instagram.com/karki_ji_2126","_blank");
+}
+
+// STOP BUTTON
+document.getElementById("stopBtn").addEventListener("click",()=>{
+  alert("This option is for fun, it doesn't work, myan");
+});
+
+// AUTO-START PRANK
+window.onload = function() {
+  startHack();
+};
+</script>
+
+</body>
+</html>
